@@ -65,6 +65,15 @@ class Maze:
             current_cell = next_cell
             nv += 1
 
+    def break_walls(self):
+        walls_idx = ['N', 'S', 'W', 'E']
+        for i in range(0, 100):
+            x = random.randint(1, self.nx - 2)
+            y = random.randint(1, self.ny - 2)
+            cell = self.cell_at(x, y)
+            knock_down_wall = walls_idx[random.randint(0, 3)]
+            cell.walls[knock_down_wall] = False
+
     def __str__(self):
         maze_rows = ['-' * self.nx*2]
         for y in range(self.ny):
@@ -105,30 +114,11 @@ class Maze:
         return (cell_x + 1) * cell_width + BORDER_SIZE
 
 
-def generate_maze(size):
+def generate_maze(size, multipath=False):
     maze = Maze(size)
     maze.make_maze()
-
-    #  TODO
-    '''
-    walls = []
-    for x in range(size):
-        for y in range(size):
-            cell = maze.cell_at(x, y)
-            val = 0
-            if cell.walls['N']:
-                val += 1
-            val = val << 1
-            if cell.walls['S']:
-                val += 1
-            val = val << 1
-            if cell.walls['W']:
-                val += 1
-            val = val << 1
-            if cell.walls['E']:
-                val += 1
-            walls.append(val)
-    '''
+    if multipath:
+        maze.break_walls()
     return maze
 
 

@@ -12,6 +12,11 @@ class Bacteria_Simulation():
         for bacterium in self.bacteria:
             bacterium.draw(frame)
 
+    def draw(self, frame, delta):
+        # draw  object
+        for bacterium in self.bacteria:
+            bacterium.draw(frame)
+
     def update(self, frame, delta):
         # delete objects
         for bacterium in self.bacteria:
@@ -19,6 +24,3 @@ class Bacteria_Simulation():
         # update bacteria
         for bacterium in self.bacteria:
             bacterium.update(delta, self.maze)
-        # draw  object
-        for bacterium in self.bacteria:
-            bacterium.draw(frame)

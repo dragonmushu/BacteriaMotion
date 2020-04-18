@@ -77,15 +77,19 @@ class Bacteria:
             else:
                 if next_x - self.radius <= maze.west_boundary(cell_x) and cell_left and cell_left.walls['S']:
                     a = next_x - maze.west_boundary(cell_x)
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_x <= maze.west_boundary(cell_x):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_y + b >= maze.south_boundary(cell_y):
                         self.y = maze.south_boundary(cell_y) - b
                         collision_y = True
                 if next_x + self.radius >= maze.east_boundary(cell_x) and cell_right and cell_right.walls['S']:
                     a = maze.east_boundary(cell_x) - next_x
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_x >= maze.east_boundary(cell_x):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_y + b >= maze.south_boundary(cell_y):
                         self.y = maze.south_boundary(cell_y) - b
                         collision_y = True
@@ -96,15 +100,19 @@ class Bacteria:
             else:
                 if next_x - self.radius <= maze.west_boundary(cell_x) and cell_left and cell_left.walls['N']:
                     a = next_x - maze.west_boundary(cell_x)
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_x <= maze.west_boundary(cell_x):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_y - b <= maze.north_boundary(cell_y):
                         self.y = maze.north_boundary(cell_y) + b
                         collision_y = True
                 if next_x + self.radius >= maze.east_boundary(cell_x) and cell_right and cell_right.walls['N']:
                     a = maze.east_boundary(cell_x) - next_x
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_x >= maze.east_boundary(cell_x):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_y - b <= maze.north_boundary(cell_y):
                         self.y = maze.north_boundary(cell_y) + b
                         collision_y = True
@@ -115,15 +123,19 @@ class Bacteria:
             else:
                 if next_y - self.radius <= maze.north_boundary(cell_y) and cell_up and cell_up.walls['E']:
                     a = next_y - maze.north_boundary(cell_y)
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_y < maze.north_boundary(cell_y):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_x + b >= maze.east_boundary(cell_x):
                         self.x = maze.east_boundary(cell_x) - b
                         collision_x = True
                 if next_y + self.radius >= maze.south_boundary(cell_y) and cell_down and cell_down.walls['E']:
                     a = maze.south_boundary(cell_y) - next_y
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_y >= maze.south_boundary(cell_y):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_x + b >= maze.east_boundary(cell_x):
                         self.x = maze.east_boundary(cell_x) - b
                         collision_x = True
@@ -134,16 +146,19 @@ class Bacteria:
             else:
                 if next_y - self.radius <= maze.north_boundary(cell_y) and cell_up and cell_up.walls['E']:
                     a = next_y - maze.north_boundary(cell_y)
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_y <= maze.north_boundary(cell_y):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_x - b <= maze.west_boundary(cell_x):
                         self.x = maze.west_boundary(cell_x) + b
                         collision_x = True
                 if next_y + self.radius >= maze.south_boundary(cell_y) and cell_down and cell_down.walls['E']:
-                    print(next_y >= maze.south_boundary(cell_y), next_y)
                     a = maze.south_boundary(cell_y) - next_y
-                    print(a)
-                    b = math.sqrt(self.radius ** 2 - a ** 2)
+                    if next_y >= maze.south_boundary(cell_y):
+                        b = self.radius
+                    else:
+                        b = math.sqrt(self.radius ** 2 - a ** 2)
                     if next_x - b <= maze.west_boundary(cell_x):
                         self.x = maze.west_boundary(cell_x) + b
                         collision_x = True

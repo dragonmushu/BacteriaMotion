@@ -4,6 +4,7 @@ from canvas import MazeCanvas
 from constants import *
 from maze import generate_maze
 from bacteria_simulation import Bacteria_Simulation
+from floodfill_simulation import FloodFill_Simulation
 
 
 class Gui:
@@ -47,12 +48,12 @@ class Gui:
         options_panel.grid(row=0, column=0, sticky=tk.N)
 
         # maze type
-        maze_options = ["random", "single path", "multi path"]
-        self.maze_value = self.generate_label_with_dropdown(options_panel, "Maze Options: ", maze_options, 0, 0)
+        maze_options = MAZE_OPTIONS
+        self.maze_value = self.generate_label_with_dropdown(options_panel, MAZE_TYPE, maze_options, 0, 0)
 
         # run type
-        run_type_options = ["bacteria", "random walk", "wall follow"]
-        self.run_value = self.generate_label_with_dropdown(options_panel, "Run Type: ", run_type_options, 0, 2)
+        run_type_options = ["Bacteria", "Random Walk", "Wall Follow"]
+        self.run_value = self.generate_label_with_dropdown(options_panel, "Run: ", run_type_options, 0, 2)
 
         # bacteria type
         bacteria_options = ["E. coli", "M. marinus"]
@@ -75,7 +76,12 @@ class Gui:
 
         # simulation run
         run = tk.Button(options_panel, text="Run Simulation", command=self.run_simulation)
+
+        # floodfill simulation run
+        floodfill = tk.Button(options_panel, text="Flood Fill", command=self.run_floodfill)
+
         run.grid(row=3, column=5, padx=5 * PANEL_BORDER, pady=PANEL_BORDER * 10)
+        floodfill.grid(row=3, column=3, padx=5 * PANEL_BORDER, pady=PANEL_BORDER * 10)
 
     def generate_info_interface(self):
         info_panel = tk.Frame(self.panel, width=CONTROL_PANEL_WIDTH, height=INFO_INTERFACE_HEIGHT, background="red")
@@ -84,21 +90,33 @@ class Gui:
     def read_stored_mazes(self):
         pass
 
-    def draw_maze(self, index=-1):
+    def draw_maze(self, index=-1, multipath=False):
         if index == -1:
-            self.maze = generate_maze(size=MAZE_DIMENSION)
+            self.maze = generate_maze(size=MAZE_DIMENSION, multipath=multipath)
         self.canvas.draw_maze(self.maze)
 
-    def run_simulation(self):
+    def run(self, floodfill=False):
         maze_type = self.maze_value.get()
-        if maze_type == "random":
+        if maze_type == RANDOM_MAZE:
             self.draw_maze()
+        elif maze_type == MULTI_PATH_MAZE:
+            self.draw_maze(multipath=True)
 
         run_velocity = float(self.run_velocity.get())
         tumble_velocity = float(self.tumble_velocity.get())
 
-        simulation = Bacteria_Simulation(self.maze, run_velocity, tumble_velocity)
+        if floodfill:
+            simulation = FloodFill_Simulation(self.maze)
+        else:
+            simulation = Bacteria_Simulation(self.maze, run_velocity, tumble_velocity)
+
         self.canvas.setup_simulation(simulation)
+
+    def run_simulation(self, type="bacteria"):
+        self.run()
+
+    def run_floodfill(self):
+        self.run(floodfill=True)
 
     def update(self, delta):
         self.canvas.update(delta)

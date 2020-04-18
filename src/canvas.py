@@ -65,3 +65,4 @@ class MazeCanvas:
         self.canvas.update()
         if self.simulation:
             self.simulation.update(self.canvas, delta)
+            self.simulation.draw(self.canvas, delta)
