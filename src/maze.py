@@ -1,5 +1,5 @@
 import random
-from constants import *
+from src.constants import *
 
 # Create a maze using the depth-first algorithm described at
 # https://scipython.com/blog/making-a-maze/

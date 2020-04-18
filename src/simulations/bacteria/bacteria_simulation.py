@@ -1,5 +1,5 @@
-from constants import *
-from bacteria import Bacteria
+from src.constants import *
+from src.simulations.bacteria.bacteria import Bacteria
 
 
 class Bacteria_Simulation():

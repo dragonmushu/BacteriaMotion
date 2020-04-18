@@ -1,7 +1,6 @@
-# noinspection PyUnresolvedReferences
-from constants import *
 import math
 
+from src.constants import *
 
 
 class Bacteria:

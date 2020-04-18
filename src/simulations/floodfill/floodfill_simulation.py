@@ -1,6 +1,7 @@
-from constants import *
 from collections import deque
-from maze import Maze
+
+from src.constants import *
+from src.maze import Maze
 
 class FloodFill_Simulation():
 

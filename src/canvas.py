@@ -1,13 +1,15 @@
 import tkinter as tk
-import math
-from constants import *
+
+from src.constants import *
 
 
 class MazeCanvas:
 
     def __init__(self, root):
-        self.canvas = tk.Canvas(root, width=MAZE_WIDTH + 2 * BORDER_SIZE, height=PANEL_HEIGHT + 2 * BORDER_SIZE, background="black")
+        self.canvas = tk.Canvas(root, width=MAZE_WIDTH + 2 * BORDER_SIZE, height=PANEL_HEIGHT + 2 * BORDER_SIZE,
+                                background="black")
         self.canvas.grid(row=0, column=0)
+
         self.simulation = None
 
     def draw_maze(self, maze):
@@ -63,6 +65,7 @@ class MazeCanvas:
 
     def update(self, delta):
         self.canvas.update()
+
         if self.simulation:
             self.simulation.update(self.canvas, delta)
             self.simulation.draw(self.canvas, delta)
