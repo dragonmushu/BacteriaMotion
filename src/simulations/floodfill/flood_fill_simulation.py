@@ -17,11 +17,15 @@ class FloodFillSimulation(Simulation):
         self.cells_to_draw = []
         self.update_final_path = False
         self.previous_cell = (MAZE_DIMENSION - 1, MAZE_DIMENSION - 1)
+        self.last_cell_drawn = False
 
     def initialize(self, frame):
         self.queue.append((0, 0))
         self.cells_to_draw = [(0, 0)]
         self.visited_cells.add((0, 0))
+
+    def finished(self):
+        return self.last_cell_drawn
 
     def draw(self, frame, delta):
         while self.cells_to_draw:
@@ -31,7 +35,7 @@ class FloodFillSimulation(Simulation):
                 frame.create_rectangle(*self.__get_rectangle_coords__(current_cell), fill="blue", outline="blue")
 
                 if current_cell[0] == 0 and current_cell[1] == 0:
-                    self._finished = True
+                    self.last_cell_drawn = True
             else:
                 frame.create_rectangle(*self.__get_rectangle_coords__(current_cell), fill="green", outline="green")
 

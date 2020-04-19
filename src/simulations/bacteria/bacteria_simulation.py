@@ -1,16 +1,21 @@
-from src.constants import *
+from src.simulations.simulation import Simulation
+from src.simulations.bacteria.constants import *
 from src.simulations.bacteria.bacteria import Bacteria
 
 
-class Bacteria_Simulation():
+class BacteriaSimulation(Simulation):
+    def __init__(self, maze, run_velocity, tumble_velocity, tumble_angular_velocity, run_time, tumble_time):
+        super().__init__(maze)
 
-    def __init__(self, maze, run_velocity, tumble_velocity):
-        self.maze = maze
-        self.bacteria = [Bacteria(run_velocity, tumble_velocity, 0.8, 5) for i in range(0, NUMBER_BACTERIA)]
+        self.bacteria = [Bacteria(run_velocity, tumble_velocity, tumble_angular_velocity, run_time, tumble_time)
+                         for i in range(0, NUMBER_BACTERIA)]
 
     def initialize(self, frame):
         for bacterium in self.bacteria:
             bacterium.draw(frame)
+
+    def finished(self):
+        pass
 
     def draw(self, frame, delta):
         # draw  object

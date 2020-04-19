@@ -1,24 +1,28 @@
 import math
+import random
 
-from src.constants import *
+from src.simulations.bacteria.constants import *
+from src.simulations.constants import *
 
 
 class Bacteria:
-
-    def __init__(self, run_velocity, tumble_velocity, run_ratio, motion_time_sec):
+    def __init__(self, run_velocity, tumble_velocity, tumble_angular_velocity, run_time, tumble_time):
         self.x = START_X
         self.y = START_Y
         self.radius = BACTERIA_RADIUS_PX
 
         self.run_velocity = run_velocity
         self.tumble_velocity = tumble_velocity
-        self.run_time = motion_time_sec * run_ratio
-        self.tumble_time = motion_time_sec * (1 - run_ratio)
+        self.tumble_angular_velocity = tumble_angular_velocity
+        self.run_time = run_time
+        self.tumble_time = tumble_time
 
         self.speed = tumble_velocity
-        self.direction = random_value_range(0, 360)
+        self.direction = self.random_value_range(0, 360)
+        self.angular_velocity = self.random_value_range(-1 * tumble_angular_velocity, tumble_angular_velocity)
 
         self.total_motion_time = 0
+        self.total_tumble_time = 0
         self.running = False
 
         self.path = [0]
@@ -28,23 +32,36 @@ class Bacteria:
 
     def draw(self, frame):
         self.id = frame.create_oval(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y +
-                                    self.radius, outline="red")
+                                    self.radius, outline="red", fill="red")
 
-    def update(self, delta, maze):
-        self.total_motion_time += delta  # increment time
-
+    def update_state(self, delta):
         if self.running and self.total_motion_time > self.run_time:
             self.running = False
             self.speed = self.tumble_velocity
+            self.angular_velocity = self.random_value_range(-1 * self.tumble_angular_velocity,
+                                                            self.tumble_angular_velocity)
             self.total_motion_time = 0
         elif not self.running and self.total_motion_time > self.tumble_time:
             self.running = True
             self.speed = self.run_velocity
             self.total_motion_time = 0
+            self.total_tumble_time = 0
+            self.angular_velocity = 0
 
         if not self.running:
-            self.direction = random_value_range(0, 360)
+            if self.total_tumble_time >= self.tumble_time / TUMBLE_DIRECTION_CHANGE_SPLIT:
+                self.angular_velocity = self.random_value_range(-1 * self.tumble_angular_velocity,
+                                                                self.tumble_angular_velocity)
+                self.total_tumble_time = 0
+            else:
+                self.total_tumble_time += delta
 
+    def update(self, delta, maze):
+        self.total_motion_time += delta
+
+        self.update_state(delta)
+
+        self.direction = self.direction + self.angular_velocity * delta
         vx = math.cos(math.radians(self.direction)) * self.speed
         vy = math.sin(math.radians(self.direction)) * self.speed
 
@@ -169,3 +186,7 @@ class Bacteria:
 
         if self.path[-1] != cell_x * MAZE_DIMENSION + cell_y:
             self.path.append(cell_x * MAZE_DIMENSION + cell_y)
+
+    @staticmethod
+    def random_value_range(min_val, max_val):
+        return random.random() * (max_val - min_val) + min_val

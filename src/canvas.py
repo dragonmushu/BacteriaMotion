@@ -62,6 +62,9 @@ class MazeCanvas:
         self.simulation = simulation
         self.simulation.initialize(self.canvas)
 
+    def stop_simulation(self):
+        self.simulation = None
+
     def update(self, delta):
         self.canvas.update()
 

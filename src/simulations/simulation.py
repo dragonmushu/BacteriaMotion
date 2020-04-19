@@ -4,10 +4,14 @@ from abc import ABC, abstractmethod
 class Simulation(ABC):
     def __init__(self, maze):
         self.maze = maze
-        self._finished = False
 
+    @abstractmethod
+    def initialize(self, frame):
+        pass
+
+    @abstractmethod
     def finished(self):
-        return self._finished
+        pass
 
     @abstractmethod
     def draw(self, frame, delta):

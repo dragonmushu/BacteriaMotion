@@ -128,9 +128,6 @@ def generate_maze(size, multipath=False):
     maze.make_maze()
     if multipath:
         maze.break_walls()
-    for i in range(0, 20):
-        for t in range(0, 20):
-            print(i, t, maze.cell_at(i, t).walls)
     return maze
 
 

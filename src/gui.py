@@ -1,10 +1,12 @@
 import tkinter as tk
 import time
+import random
+import math
 
 from src.canvas import MazeCanvas
 from src.constants import *
 from src.maze import generate_maze
-from src.simulations.bacteria.bacteria_simulation import Bacteria_Simulation
+from src.simulations.bacteria.bacteria_simulation import BacteriaSimulation
 from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
 
 
@@ -23,6 +25,7 @@ class Gui:
         self.generate_info_interface()
 
         # initialize random maze
+        self.change_maze()
         self.draw_maze()
 
     def generate_label_with_dropdown(self, panel, title, options, row, column):
@@ -73,34 +76,56 @@ class Gui:
         # wall angle
         self.wall_angle = self.generate_label_with_entry(options_panel, WALL_BOUNCE, 0.0, 1, 4)
 
+        # run time
+        self.run_time = self.generate_label_with_entry(options_panel, RUN_TIME, 0.0, 2, 0)
+
+        # tumble time
+        self.tumble_time = self.generate_label_with_entry(options_panel, TUMBLE_TIME, 0.0, 2, 2)
+
+        # tumble angular velocity
+        self.tumble_angular_velocity = self.generate_label_with_entry(options_panel, TUMBLE_ANGULAR_VELOCITY, 0.0, 2, 4)
+
         # simulation run
         self.generate_button(options_panel, RUN_SIMULATION, self.run_simulation, 3, 5)
 
         # floodfill simulation run
         self.generate_button(options_panel, FLOOD_FILL, self.run_flood_fill, 3, 3)
 
+        # change maze
+        self.generate_button(options_panel, CHANGE_MAZE, self.change_maze, 3, 1)
+
     def generate_info_interface(self):
         info_panel = tk.Frame(self.panel, width=CONTROL_PANEL_WIDTH, height=INFO_INTERFACE_HEIGHT, background="red")
         info_panel.grid(row=1, column=0)
 
-    def draw_maze(self, multipath=True):
-        self.maze = generate_maze(size=MAZE_DIMENSION, multipath=multipath)
+    def change_maze(self):
+        self.canvas.stop_simulation()
+
+        maze_type = self.maze_value.get()
+        if maze_type == RANDOM_MAZE:
+            self.maze = generate_maze(size=MAZE_DIMENSION, multipath=random.randint(0, 1))
+        elif maze_type == SINGLE_PATH_MAZE:
+            self.maze = generate_maze(size=MAZE_DIMENSION)
+        elif maze_type == MULTI_PATH_MAZE:
+            self.maze = generate_maze(size=MAZE_DIMENSION, multipath=True)
+
+        self.draw_maze()
+
+    def draw_maze(self):
         self.canvas.draw_maze(self.maze)
 
     def run(self, simulation_type=BACTERIA_SIMULATION):
-        maze_type = self.maze_value.get()
-        if maze_type == RANDOM_MAZE:
-            self.draw_maze(multipath=random.randint(0, 1))
-        elif maze_type == SINGLE_PATH_MAZE:
-            self.draw_maze()
-        elif maze_type == MULTI_PATH_MAZE:
-            self.draw_maze(multipath=True)
+        self.draw_maze()
 
         run_velocity = float(self.run_velocity.get())
         tumble_velocity = float(self.tumble_velocity.get())
+        tumble_angular_velocity = math.degrees(float(self.tumble_angular_velocity.get()))
+        run_time = float(self.run_time.get())
+        tumble_time = float(self.tumble_time.get())
 
         if simulation_type == BACTERIA_SIMULATION:
-            simulation = Bacteria_Simulation(self.maze, run_velocity, tumble_velocity)
+            simulation = BacteriaSimulation(self.maze, run_velocity, tumble_velocity, tumble_angular_velocity, run_time,
+                                            tumble_time)
         elif simulation_type == RANDOM_WALK_SIMULATION:
             pass
         elif simulation_type == WALL_FOLLOW_SIMULATION:
