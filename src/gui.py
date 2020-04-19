@@ -9,6 +9,7 @@ from src.maze import generate_maze
 from src.simulations.bacteria.bacteria_simulation import BacteriaSimulation
 from src.simulations.wallfollow.right_wall_follow_simulation import RightWallFollowSimulation
 from src.simulations.wallfollow.left_wall_follow_simulation import LeftWallFollowSimulation
+from src.simulations.randomwalk.random_walk_simulation import RandomWalkSimulation
 from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
 
 
@@ -129,7 +130,7 @@ class Gui:
             simulation = BacteriaSimulation(self.maze, run_velocity, tumble_velocity, tumble_angular_velocity, run_time,
                                             tumble_time)
         elif simulation_type == RANDOM_WALK_SIMULATION:
-            pass
+            simulation = RandomWalkSimulation(self.maze)
         elif simulation_type == LEFT_WALL_FOLLOW_SIMULATION:
             simulation = LeftWallFollowSimulation(self.maze)
         elif simulation_type == RIGHT_WALL_FOLLOW_SIMULATION:
