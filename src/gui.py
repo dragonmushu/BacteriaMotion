@@ -7,6 +7,8 @@ from src.canvas import MazeCanvas
 from src.constants import *
 from src.maze import generate_maze
 from src.simulations.bacteria.bacteria_simulation import BacteriaSimulation
+from src.simulations.wallfollow.right_wall_follow_simulation import RightWallFollowSimulation
+from src.simulations.wallfollow.left_wall_follow_simulation import LeftWallFollowSimulation
 from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
 
 
@@ -128,8 +130,10 @@ class Gui:
                                             tumble_time)
         elif simulation_type == RANDOM_WALK_SIMULATION:
             pass
-        elif simulation_type == WALL_FOLLOW_SIMULATION:
-            pass
+        elif simulation_type == LEFT_WALL_FOLLOW_SIMULATION:
+            simulation = LeftWallFollowSimulation(self.maze)
+        elif simulation_type == RIGHT_WALL_FOLLOW_SIMULATION:
+            simulation = RightWallFollowSimulation(self.maze)
         else:
             simulation = FloodFillSimulation(self.maze)
 
