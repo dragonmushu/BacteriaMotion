@@ -71,8 +71,17 @@ class Maze:
             x = random.randint(1, self.nx - 2)
             y = random.randint(1, self.ny - 2)
             cell = self.cell_at(x, y)
+            idx = random.randint(0, 3)
             knock_down_wall = walls_idx[random.randint(0, 3)]
             cell.walls[knock_down_wall] = False
+            if knock_down_wall == 'N':
+                self.cell_at(x, y - 1).walls['S'] = False
+            if knock_down_wall == 'S':
+                self.cell_at(x, y + 1).walls['N'] = False
+            if knock_down_wall == 'E':
+                self.cell_at(x + 1, y).walls['W'] = False
+            if knock_down_wall == 'W':
+                self.cell_at(x - 1, y).walls['E'] = False
 
     def __str__(self):
         maze_rows = ['-' * self.nx*2]
@@ -119,6 +128,9 @@ def generate_maze(size, multipath=False):
     maze.make_maze()
     if multipath:
         maze.break_walls()
+    for i in range(0, 20):
+        for t in range(0, 20):
+            print(i, t, maze.cell_at(i, t).walls)
     return maze
 
 

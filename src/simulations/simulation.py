@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class Simulation(ABC):
-    def __init__(self):
+    def __init__(self, maze):
+        self.maze = maze
         self._finished = False
 
     def finished(self):

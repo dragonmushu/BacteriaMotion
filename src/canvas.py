@@ -31,22 +31,21 @@ class MazeCanvas:
                                      BORDER_SIZE + MAZE_WIDTH + WALL_WIDTH, fill="red", outline="red")
 
         # draw vertical walls
-        for r in range(1, maze_size):
-            x = r * cell_width + BORDER_SIZE
-            for c in range(maze_size):
-                y = c * cell_width + BORDER_SIZE
-                cell = maze.cell_at(r, c)
+        for r in range(maze_size):
+            y = r * cell_width + BORDER_SIZE
+            for c in range(1, maze_size):
+                x = c * cell_width + BORDER_SIZE
+                cell = maze.cell_at(c, r)
                 if cell.walls['W']:
                     self.canvas.create_rectangle(x, y + WALL_WIDTH, x + WALL_WIDTH, y + cell_width, fill="red",
                                                  outline="red")
 
         # draw horizontal walls
-        y = BORDER_SIZE + WALL_WIDTH
-        for c in range(1, maze_size):
-            y = c * cell_width + BORDER_SIZE
-            for r in range(maze_size):
-                x = r * cell_width + BORDER_SIZE
-                cell = maze.cell_at(r, c)
+        for c in range(maze_size):
+            x = c * cell_width + BORDER_SIZE
+            for r in range(1, maze_size):
+                y = r * cell_width + BORDER_SIZE
+                cell = maze.cell_at(c, r)
                 if cell.walls['N']:
                     self.canvas.create_rectangle(x + WALL_WIDTH, y, x + cell_width, y + WALL_WIDTH, fill="red",
                                                  outline="red")
@@ -69,3 +68,6 @@ class MazeCanvas:
         if self.simulation:
             self.simulation.update(self.canvas, delta)
             self.simulation.draw(self.canvas, delta)
+
+            if self.simulation.finished():
+                self.simulation = None

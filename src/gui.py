@@ -5,7 +5,7 @@ from src.canvas import MazeCanvas
 from src.constants import *
 from src.maze import generate_maze
 from src.simulations.bacteria.bacteria_simulation import Bacteria_Simulation
-from src.simulations.floodfill.floodfill_simulation import FloodFill_Simulation
+from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
 
 
 class Gui:
@@ -83,7 +83,7 @@ class Gui:
         info_panel = tk.Frame(self.panel, width=CONTROL_PANEL_WIDTH, height=INFO_INTERFACE_HEIGHT, background="red")
         info_panel.grid(row=1, column=0)
 
-    def draw_maze(self, multipath=False):
+    def draw_maze(self, multipath=True):
         self.maze = generate_maze(size=MAZE_DIMENSION, multipath=multipath)
         self.canvas.draw_maze(self.maze)
 
@@ -106,7 +106,7 @@ class Gui:
         elif simulation_type == WALL_FOLLOW_SIMULATION:
             pass
         else:
-            simulation = FloodFill_Simulation(self.maze)
+            simulation = FloodFillSimulation(self.maze)
 
         self.canvas.setup_simulation(simulation)
 
