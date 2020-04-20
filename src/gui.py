@@ -5,6 +5,7 @@ import math
 
 from src.canvas import MazeCanvas
 from src.constants import *
+from src.simulations.bacteria.constants import *
 from src.maze import generate_maze
 from src.simulations.bacteria.bacteria_simulation import BacteriaSimulation
 from src.simulations.wallfollow.right_wall_follow_simulation import RightWallFollowSimulation
@@ -31,12 +32,18 @@ class Gui:
         self.change_maze()
         self.draw_maze()
 
-    def generate_label_with_dropdown(self, panel, title, options, row, column):
+        # start simulation
+        self.running_simulation = False
+
+    def generate_label_with_dropdown(self, panel, title, options, row, column, command=None):
         label = tk.Label(panel, text=title)
         label.grid(row=row, column=column, padx=PANEL_BORDER, pady=PANEL_BORDER)
         value = tk.StringVar(panel)
         value.set(options[0])
-        dropdown = tk.OptionMenu(panel, value, *options)
+        if command:
+            dropdown = tk.OptionMenu(panel, value, *options, command=command)
+        else:
+            dropdown = tk.OptionMenu(panel, value, *options)
         dropdown.grid(row=row, column=column + 1, padx=PANEL_BORDER, pady=PANEL_BORDER)
         return value
 
@@ -68,7 +75,8 @@ class Gui:
 
         # bacteria type
         bacteria_options = BACTERIA_OPTIONS
-        self.bacteria_value = self.generate_label_with_dropdown(options_panel, BACTERIA_TYPE, bacteria_options, 0, 4)
+        self.generate_label_with_dropdown(options_panel, BACTERIA_TYPE, bacteria_options, 0, 4,
+                                          command=self.generate_bacteria_parameters)
 
         # run velocity
         self.run_velocity = self.generate_label_with_entry(options_panel, RUN_VELOCITY, 0.0, 1, 0)
@@ -98,11 +106,38 @@ class Gui:
         self.generate_button(options_panel, CHANGE_MAZE, self.change_maze, 3, 1)
 
     def generate_info_interface(self):
-        info_panel = tk.Frame(self.panel, width=CONTROL_PANEL_WIDTH, height=INFO_INTERFACE_HEIGHT, background="red")
-        info_panel.grid(row=1, column=0)
+        self.info_panel = tk.Frame(self.panel, width=CONTROL_PANEL_WIDTH, height=350, background="black")
+        self.info_panel.grid(row=1, column=0)
+
+        self.total_time = 0
+        self.timer = tk.Label(self.info_panel, text="00:00:000", background="black")
+        self.timer.configure(foreground="white")
+        self.timer.place(relx=1, rely=0, anchor='ne')
+
+    def generate_bacteria_parameters(self, value):
+        if value == INPUT_TYPE:
+            self.run_velocity.set(0)
+            self.run_time.set(0)
+            self.tumble_time.set(0)
+            self.tumble_angular_velocity.set(0)
+            self.tumble_velocity.set(0)
+        elif value == ECOLI_TYPE:
+            self.run_velocity.set(E_COLI_RUN_VELOCITY)
+            self.run_time.set(E_COLI_RUN_TIME)
+            self.tumble_time.set(E_COLI_TUMBLE_TIME)
+            self.tumble_angular_velocity.set(E_COLI_ANGULAR_VELOCITY)
+            self.tumble_velocity.set(E_COLI_TUMBLE_VELOCITY)
+        else:
+            self.run_velocity.set(M_MAR_RUN_VELOCITY)
+            self.run_time.set(M_MAR_RUN_TIME)
+            self.tumble_time.set(M_MAR_TUMBLE_TIME)
+            self.tumble_angular_velocity.set(M_MAR_ANGULAR_VELOCITY)
+            self.tumble_velocity.set(M_MAR_TUMBLE_VELOCITY)
 
     def change_maze(self):
         self.canvas.stop_simulation()
+        self.running_simulation = False
+        self.total_time = 0
 
         maze_type = self.maze_value.get()
         if maze_type == RANDOM_MAZE:
@@ -119,9 +154,11 @@ class Gui:
 
     def run(self, simulation_type=BACTERIA_SIMULATION):
         self.draw_maze()
+        self.running_simulation = True
+        self.total_time = 0
 
-        run_velocity = float(self.run_velocity.get())
-        tumble_velocity = float(self.tumble_velocity.get())
+        run_velocity = float(self.run_velocity.get()) * PIXEL_UM_RATIO
+        tumble_velocity = float(self.tumble_velocity.get()) * PIXEL_UM_RATIO
         tumble_angular_velocity = math.degrees(float(self.tumble_angular_velocity.get()))
         run_time = float(self.run_time.get())
         tumble_time = float(self.tumble_time.get())
@@ -146,8 +183,31 @@ class Gui:
     def run_flood_fill(self):
         self.run(simulation_type=FLOOD_FILL)
 
+    def retrieve_time(self):
+        sec = int(self.total_time)
+        ms = int((self.total_time - sec) * 1000)
+        mins = int(sec/60)
+        secs = sec - mins * 60
+
+        str_mins = str(mins)
+        str_secs = str(secs)
+        str_ms = str(ms)
+        if mins < 10:
+            str_mins = "0"+str_mins
+        if secs < 10:
+            str_secs = "0"+str_secs
+        if ms < 10:
+            str_ms = "00"+str_ms
+        elif ms < 100:
+            str_ms = "0"+str_ms
+
+        return str_mins+":"+str_secs+":"+str_ms
+
     def update(self, delta):
         self.canvas.update(delta)
+        if self.running_simulation:
+            self.total_time += delta
+        self.timer['text'] = self.retrieve_time()
 
 
 def run(window, frame):
@@ -167,6 +227,7 @@ def run(window, frame):
 
 if __name__ == '__main__':
     window = tk.Tk()
+    window.configure(background="black")
     window.title("Bacteria Maze Simulation")
     gui = Gui(window)
     run(window, gui)

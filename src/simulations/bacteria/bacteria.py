@@ -34,20 +34,21 @@ class Bacteria:
         self.id = frame.create_oval(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y +
                                     self.radius, outline="red", fill="red")
 
-    def update_state(self, delta):
-        if self.running and self.total_motion_time > self.run_time:
-            self.running = False
-            self.speed = self.tumble_velocity
-            self.angular_velocity = self.random_value_range(-1 * self.tumble_angular_velocity,
-                                                            self.tumble_angular_velocity)
-            self.total_motion_time = 0
-        elif not self.running and self.total_motion_time > self.tumble_time:
-            self.running = True
-            self.speed = self.run_velocity
-            self.total_motion_time = 0
-            self.total_tumble_time = 0
-            self.angular_velocity = 0
+    def change_to_tumbling(self):
+        self.running = False
+        self.speed = self.tumble_velocity
+        self.angular_velocity = self.random_value_range(-1 * self.tumble_angular_velocity,
+                                                        self.tumble_angular_velocity)
+        self.total_motion_time = 0
 
+    def change_to_running(self):
+        self.running = True
+        self.speed = self.run_velocity
+        self.total_motion_time = 0
+        self.total_tumble_time = 0
+        self.angular_velocity = 0
+
+    def update_state(self, delta):
         if not self.running:
             if self.total_tumble_time >= self.tumble_time / TUMBLE_DIRECTION_CHANGE_SPLIT:
                 self.angular_velocity = self.random_value_range(-1 * self.tumble_angular_velocity,
@@ -55,6 +56,11 @@ class Bacteria:
                 self.total_tumble_time = 0
             else:
                 self.total_tumble_time += delta
+
+        if self.running and self.total_motion_time > self.run_time:
+            self.change_to_tumbling()
+        elif not self.running and self.total_motion_time > self.tumble_time:
+            self.change_to_running()
 
     def update(self, delta, maze):
         self.total_motion_time += delta
@@ -178,6 +184,9 @@ class Bacteria:
                     if next_x - b <= maze.west_boundary(cell_x):
                         self.x = maze.west_boundary(cell_x) + b
                         collision_x = True
+
+        if collision_y and collision_x and self.running:
+            self.change_to_tumbling()
 
         if not collision_y:
             self.y = next_y
