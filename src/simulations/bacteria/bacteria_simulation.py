@@ -33,7 +33,17 @@ class BacteriaSimulation(Simulation):
 
         return final_path
 
+    def write_statistics(self):
+        for bacterium in self.bacteria:
+            if bacterium.completed_maze:
+                path = bacterium.retrieve_path()
+                print("Total Time: ", bacterium.total_time)
+                print("Route Distance: ", len(path))
+                print("Cells Visited: ", len(set(path)))
+
     def statistics(self):
+        self.write_statistics()
+
         number_bacteria_completed = 0
 
         avg_time = 0
@@ -54,16 +64,16 @@ class BacteriaSimulation(Simulation):
                 if fastest_time == -1 or bacterium.total_time < fastest_time:
                     fastest_time = bacterium.total_time
 
-            avg_number_cells_visited += len(path)
+            avg_number_cells_visited += len(set(path))
 
         if number_bacteria_completed == 0:
-            return {}
+            number_bacteria_completed = 1
 
         avg_number_cells_visited = avg_number_cells_visited / NUMBER_BACTERIA
 
         return {"Success Rate (%)": number_bacteria_completed / NUMBER_BACTERIA * 100,
                 "Average Successful Total Time (s)": avg_time / number_bacteria_completed,
-                "Average Successful Path Distance (%)": avg_route_distance / number_bacteria_completed * 100,
+                "Average Successful Path Distance (cells)": avg_route_distance / number_bacteria_completed,
                 "Average Cells Explored (cells)": avg_number_cells_visited,
                 "Average Percent Exploration (all bacteria) (%)": avg_number_cells_visited / (MAZE_DIMENSION * MAZE_DIMENSION) * 100,
                 "Shortest Path Distance (cells)": fastest_path_distance,

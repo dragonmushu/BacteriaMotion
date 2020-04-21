@@ -1,4 +1,3 @@
-import math
 import random
 
 from src.simulations.bacteria.constants import *
@@ -9,6 +8,8 @@ class Bacteria:
     def __init__(self, run_velocity, tumble_velocity, tumble_angular_velocity, run_time, tumble_time):
         self.x = START_X
         self.y = START_Y
+        self.dx = 0
+        self.dy = 0
         self.radius = BACTERIA_RADIUS_PX
 
         self.run_velocity = run_velocity
@@ -29,6 +30,8 @@ class Bacteria:
         self.cells_covered = {(0, 0)}
         self.completed_maze = False
         self.total_time = 0
+
+        self.id = -1
 
     def remove(self, frame):
         frame.delete(self.id)
@@ -109,6 +112,23 @@ class Bacteria:
         next_x = self.x + vx * delta
         next_y = self.y + vy * delta
 
+        if vy > 0:
+            if cell.walls['S'] and next_y + self.radius >= maze.south_boundary(cell_y):
+                self.y = maze.south_boundary(cell_y) - self.radius
+                collision_y = True
+        if vy < 0:
+            if cell.walls['N'] and next_y - self.radius <= maze.north_boundary(cell_y):
+                self.y = maze.north_boundary(cell_y) + self.radius
+                collision_y = True
+        if vx > 0:
+            if cell.walls['E'] and next_x + self.radius >= maze.east_boundary(cell_x):
+                self.x = maze.east_boundary(cell_x) - self.radius
+                collision_x = True
+        if vx < 0:
+            if cell.walls['W'] and next_x - self.radius <= maze.west_boundary(cell_x):
+                self.x = maze.west_boundary(cell_x) + self.radius
+                collision_x = True
+
         cell_left, cell_right, cell_up, cell_down = None, None, None, None
         if cell_x > 0:
             cell_left = maze.cell_at(cell_x - 1, cell_y)
@@ -119,11 +139,8 @@ class Bacteria:
         if cell_y < MAZE_DIMENSION - 1:
             cell_down = maze.cell_at(cell_x, cell_y + 1)
 
-        if vy > 0:
-            if cell.walls['S'] and next_y + self.radius >= maze.south_boundary(cell_y):
-                self.y = maze.south_boundary(cell_y) - self.radius
-                collision_y = True
-            else:
+        if not collision_x and not collision_y:
+            if vy > 0:
                 if next_x - self.radius <= maze.west_boundary(cell_x) and cell_left and cell_left.walls['S']:
                     a = next_x - maze.west_boundary(cell_x)
                     if next_x <= maze.west_boundary(cell_x):
@@ -142,11 +159,7 @@ class Bacteria:
                     if next_y + b >= maze.south_boundary(cell_y):
                         self.y = maze.south_boundary(cell_y) - b
                         collision_y = True
-        if vy < 0:
-            if cell.walls['N'] and next_y - self.radius <= maze.north_boundary(cell_y):
-                self.y = maze.north_boundary(cell_y) + self.radius
-                collision_y = True
-            else:
+            if vy < 0:
                 if next_x - self.radius <= maze.west_boundary(cell_x) and cell_left and cell_left.walls['N']:
                     a = next_x - maze.west_boundary(cell_x)
                     if next_x <= maze.west_boundary(cell_x):
@@ -165,11 +178,7 @@ class Bacteria:
                     if next_y - b <= maze.north_boundary(cell_y):
                         self.y = maze.north_boundary(cell_y) + b
                         collision_y = True
-        if vx > 0:
-            if cell.walls['E'] and next_x + self.radius >= maze.east_boundary(cell_x):
-                self.x = maze.east_boundary(cell_x) - self.radius
-                collision_x = True
-            else:
+            if vx > 0:
                 if next_y - self.radius <= maze.north_boundary(cell_y) and cell_up and cell_up.walls['E']:
                     a = next_y - maze.north_boundary(cell_y)
                     if next_y < maze.north_boundary(cell_y):
@@ -188,12 +197,8 @@ class Bacteria:
                     if next_x + b >= maze.east_boundary(cell_x):
                         self.x = maze.east_boundary(cell_x) - b
                         collision_x = True
-        if vx < 0:
-            if cell.walls['W'] and next_x - self.radius <= maze.west_boundary(cell_x):
-                self.x = maze.west_boundary(cell_x) + self.radius
-                collision_x = True
-            else:
-                if next_y - self.radius <= maze.north_boundary(cell_y) and cell_up and cell_up.walls['E']:
+            if vx < 0:
+                if next_y - self.radius <= maze.north_boundary(cell_y) and cell_up and cell_up.walls['W']:
                     a = next_y - maze.north_boundary(cell_y)
                     if next_y <= maze.north_boundary(cell_y):
                         b = self.radius
@@ -202,7 +207,7 @@ class Bacteria:
                     if next_x - b <= maze.west_boundary(cell_x):
                         self.x = maze.west_boundary(cell_x) + b
                         collision_x = True
-                if next_y + self.radius >= maze.south_boundary(cell_y) and cell_down and cell_down.walls['E']:
+                if next_y + self.radius >= maze.south_boundary(cell_y) and cell_down and cell_down.walls['W']:
                     a = maze.south_boundary(cell_y) - next_y
                     if next_y >= maze.south_boundary(cell_y):
                         b = self.radius
@@ -211,15 +216,17 @@ class Bacteria:
                     if next_x - b <= maze.west_boundary(cell_x):
                         self.x = maze.west_boundary(cell_x) + b
                         collision_x = True
-        '''
+
         if collision_y and collision_x and self.running:
             self.change_to_tumbling()
-        '''
 
         if not collision_y:
             self.y = next_y
         if not collision_x:
             self.x = next_x
+
+        if cell_x == MAZE_DIMENSION - 1 and cell_y == MAZE_DIMENSION - 1:
+            self.completed_maze = True
 
     @staticmethod
     def random_value_range(min_val, max_val):
