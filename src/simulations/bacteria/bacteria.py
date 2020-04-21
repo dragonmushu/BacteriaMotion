@@ -25,7 +25,10 @@ class Bacteria:
         self.total_tumble_time = 0
         self.running = False
 
-        self.path = [0]
+        self.path = [(0, 0)]
+        self.cells_covered = {(0, 0)}
+        self.completed_maze = False
+        self.total_time = 0
 
     def remove(self, frame):
         frame.delete(self.id)
@@ -33,6 +36,21 @@ class Bacteria:
     def draw(self, frame):
         self.id = frame.create_oval(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y +
                                     self.radius, outline="red", fill="red")
+
+    def retrieve_path(self):
+        return self.path
+
+    def is_completed(self):
+        return self.completed_maze
+
+    def total_simulation_time(self):
+        return self.total_time
+
+    def number_cells_explored(self):
+        return len(self.cells_covered)
+
+    def route_distance(self):
+        return len(self.path)
 
     def change_to_tumbling(self):
         self.running = False
@@ -63,6 +81,10 @@ class Bacteria:
             self.change_to_running()
 
     def update(self, delta, maze):
+        if self.completed_maze:
+            return
+
+        self.total_time += delta
         self.total_motion_time += delta
 
         self.update_state(delta)
@@ -78,6 +100,11 @@ class Bacteria:
         cell_x = int((self.x - BORDER_SIZE) / cell_width)
         cell_y = int((self.y - BORDER_SIZE) / cell_width)
         cell = maze.cell_at(cell_x, cell_y)
+
+        self.cells_covered.add((cell_x, cell_y))
+        previous_cell = self.path[-1]
+        if not previous_cell[0] == cell_x or not previous_cell[1] == cell_y:
+            self.path.append((cell_x, cell_y))
 
         next_x = self.x + vx * delta
         next_y = self.y + vy * delta
@@ -184,17 +211,15 @@ class Bacteria:
                     if next_x - b <= maze.west_boundary(cell_x):
                         self.x = maze.west_boundary(cell_x) + b
                         collision_x = True
-
+        '''
         if collision_y and collision_x and self.running:
             self.change_to_tumbling()
+        '''
 
         if not collision_y:
             self.y = next_y
         if not collision_x:
             self.x = next_x
-
-        if self.path[-1] != cell_x * MAZE_DIMENSION + cell_y:
-            self.path.append(cell_x * MAZE_DIMENSION + cell_y)
 
     @staticmethod
     def random_value_range(min_val, max_val):

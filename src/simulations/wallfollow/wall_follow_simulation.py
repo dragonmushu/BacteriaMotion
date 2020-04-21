@@ -1,6 +1,7 @@
 from builtins import staticmethod
 
 from src.simulations.simulation import Simulation
+from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
 from src.simulations.wallfollow.constants import *
 from src.simulations.bacteria.constants import BACTERIA_RADIUS_PX
 from src.simulations.constants import START_X, START_Y
@@ -21,6 +22,10 @@ class WallFollowSimulation(Simulation):
         self.current_cell = (0, 0)
         self.next_cell = (0, 0)
 
+        self.total_time = 0
+        self.path = [(0, 0)]
+        self.new_cell_to_draw = (0, 0)
+
     def initialize(self, frame):
         self.draw(frame, 0)
         self.resolve_next_cell()
@@ -28,10 +33,29 @@ class WallFollowSimulation(Simulation):
     def finished(self):
         return self.current_cell[0] == MAZE_DIMENSION - 1 and self.current_cell[1] == MAZE_DIMENSION - 1
 
+    def statistics(self):
+        return {"Total Time": self.total_time,
+                "Number Cells Explored": len(self.path),
+                "Percent Exploration": len(self.path) / (MAZE_DIMENSION * MAZE_DIMENSION),
+                "Route Distance": len(self.path)}
+
+    def retrieve_path(self):
+        if not self.finished():
+            return []
+
+        if self.path[-1][0] != MAZE_DIMENSION - 1 or self.path[-1][1] != MAZE_DIMENSION - 1:
+            self.path.pop()
+        return self.path
+
     def remove(self, frame):
         frame.delete(self.id)
 
     def draw(self, frame, delta):
+        if self.new_cell_to_draw:
+            frame.create_rectangle(*FloodFillSimulation.__get_rectangle_coords__(self.new_cell_to_draw), fill="green",
+                                   outline="green")
+            self.new_cell_to_draw = None
+
         self.id = frame.create_oval(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y +
                                     self.radius, outline="red", fill="red")
 
@@ -54,6 +78,8 @@ class WallFollowSimulation(Simulation):
             self.turn_against_orientation()
 
         self.next_cell = self.cell_in_front(current_x, current_y)
+        self.path.append(self.next_cell)
+        self.new_cell_to_draw = self.next_cell
 
     def cell_in_front(self, current_x, current_y):
         if self.direction == 'N':
@@ -137,6 +163,7 @@ class WallFollowSimulation(Simulation):
 
     def update(self, frame, delta):
         self.remove(frame)
+        self.total_time += delta
 
         next_cell_position = self.center_cell(self.next_cell)
         next_cell_x = next_cell_position[0]

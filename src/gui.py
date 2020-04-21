@@ -18,7 +18,7 @@ class Gui:
 
     def __init__(self, root):
         # create maze canvas
-        self.canvas = MazeCanvas(root)
+        self.canvas = MazeCanvas(root, self.simulation_finished)
 
         # create panel
         self.panel = tk.Frame(root, width=CONTROL_PANEL_WIDTH, height=PANEL_HEIGHT)
@@ -110,9 +110,13 @@ class Gui:
         self.info_panel.grid(row=1, column=0)
 
         self.total_time = 0
-        self.timer = tk.Label(self.info_panel, text="00:00:000", background="black")
+        self.timer = tk.Label(self.info_panel, text=self.retrieve_time(self.total_time), background="black")
         self.timer.configure(foreground="white")
         self.timer.place(relx=1, rely=0, anchor='ne')
+
+        self.stats = tk.Label(self.info_panel, text="", justify=tk.LEFT, background="black")
+        self.stats.configure(foreground="white")
+        self.stats.place(relx=0, rely=0, anchor='nw')
 
     def generate_bacteria_parameters(self, value):
         if value == INPUT_TYPE:
@@ -135,8 +139,6 @@ class Gui:
             self.tumble_velocity.set(M_MAR_TUMBLE_VELOCITY)
 
     def change_maze(self):
-        self.canvas.stop_simulation()
-        self.running_simulation = False
         self.total_time = 0
 
         maze_type = self.maze_value.get()
@@ -148,13 +150,21 @@ class Gui:
             self.maze = generate_maze(size=MAZE_DIMENSION, multipath=True)
 
         self.draw_maze()
+        self.canvas.stop_simulation()
 
     def draw_maze(self):
         self.canvas.draw_maze(self.maze)
 
+    def simulation_finished(self, data):
+        text = ""
+        for k, v in data.items():
+            text += str(k) + " : " + str(v) + "\n"
+
+        self.stats['text'] = text
+
     def run(self, simulation_type=BACTERIA_SIMULATION):
         self.draw_maze()
-        self.running_simulation = True
+        self.canvas.stop_simulation()
         self.total_time = 0
 
         run_velocity = float(self.run_velocity.get()) * PIXEL_UM_RATIO
@@ -183,31 +193,35 @@ class Gui:
     def run_flood_fill(self):
         self.run(simulation_type=FLOOD_FILL)
 
-    def retrieve_time(self):
-        sec = int(self.total_time)
-        ms = int((self.total_time - sec) * 1000)
-        mins = int(sec/60)
-        secs = sec - mins * 60
-
-        str_mins = str(mins)
-        str_secs = str(secs)
-        str_ms = str(ms)
-        if mins < 10:
-            str_mins = "0"+str_mins
-        if secs < 10:
-            str_secs = "0"+str_secs
-        if ms < 10:
-            str_ms = "00"+str_ms
-        elif ms < 100:
-            str_ms = "0"+str_ms
-
-        return str_mins+":"+str_secs+":"+str_ms
-
     def update(self, delta):
         self.canvas.update(delta)
-        if self.running_simulation:
+
+        if self.canvas.simulation_running():
             self.total_time += delta
-        self.timer['text'] = self.retrieve_time()
+
+        self.timer['text'] = self.retrieve_time(self.total_time)
+
+    @staticmethod
+    def retrieve_time(time):
+        total_seconds = int(time)
+        ms = int((time - total_seconds) * 1000)
+        minutes = int(total_seconds / 60)
+        seconds = total_seconds % 60
+
+        str_minutes = str(minutes)
+        str_seconds = str(seconds)
+        str_ms = str(ms)
+
+        if minutes < 10:
+            str_minutes = "0" + str_minutes
+        if seconds < 10:
+            str_secs = "0" + str_seconds
+        if ms < 10:
+            str_ms = "00" + str_ms
+        elif ms < 100:
+            str_ms = "0" + str_ms
+
+        return str_minutes + ":" + str_seconds + ":" + str_ms
 
 
 def run(window, frame):

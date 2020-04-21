@@ -1,16 +1,20 @@
 import tkinter as tk
 
 from src.constants import *
-
+from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
 
 class MazeCanvas:
 
-    def __init__(self, root):
+    def __init__(self, root, simulation_end_callback):
         self.canvas = tk.Canvas(root, width=MAZE_WIDTH + 2 * BORDER_SIZE, height=PANEL_HEIGHT + 2 * BORDER_SIZE,
                                 background="black")
         self.canvas.grid(row=0, column=0)
 
         self.simulation = None
+        self.simulation_end = simulation_end_callback
+
+        self.final_path = []
+        self.drawing_path_time = 0
 
     def draw_maze(self, maze):
         # delete all
@@ -61,8 +65,17 @@ class MazeCanvas:
     def setup_simulation(self, simulation):
         self.simulation = simulation
         self.simulation.initialize(self.canvas)
+        self.final_path = []
+
+    def simulation_running(self):
+        return self.simulation is not None
 
     def stop_simulation(self):
+        if self.simulation:
+            self.final_path = self.simulation.retrieve_path()
+            self.drawing_path_time = 0
+            if self.simulation.finished():
+                self.simulation_end(self.simulation.statistics())
         self.simulation = None
 
     def update(self, delta):
@@ -73,4 +86,11 @@ class MazeCanvas:
             self.simulation.draw(self.canvas, delta)
 
             if self.simulation.finished():
-                self.simulation = None
+                self.stop_simulation()
+
+        if len(self.final_path) != 0:
+            self.drawing_path_time += delta
+            if self.drawing_path_time > FINAL_PATH_SPEED:
+                self.canvas.create_rectangle(*FloodFillSimulation.__get_rectangle_coords__(self.final_path.pop()),
+                                             fill="blue", outline="blue")
+                self.drawing_path_time = 0

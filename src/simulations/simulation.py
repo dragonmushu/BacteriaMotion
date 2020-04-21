@@ -14,6 +14,14 @@ class Simulation(ABC):
         pass
 
     @abstractmethod
+    def statistics(self):
+        pass
+
+    @staticmethod
+    def retrieve_path(self):
+        pass
+
+    @abstractmethod
     def draw(self, frame, delta):
         pass
 
