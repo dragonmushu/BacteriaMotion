@@ -1,7 +1,13 @@
 # BacteriaMotion
-Maze solving bacteria simulator
+Gui simulating bacterial motion solving mazes compared to standard algorithms.
 
-GUI Features 
+# Motivation
+The ability of an organism to solve a maze is a non-trivial way to evaluate organismal intelligence. In fact, this method has been used to evaluate and compare the intelligence of humans, monkeys, other mammals, and more. One of the areas that is currently less explored is the intelligence of bacteria in a maze-solving context; however, due to advancements in microfluidics, it now poses as an interesting way to better study their space searching and partitioning algorithms. By studying how bacteria move through a maze and explore paths, it will allow us to create search algorithms inspired by their methods for use in a variety of applications. 
+
+# Installation
+
+# Features
+
 - Maze Options
     - Singlepath: the default maze generated, can persist for multiple simulations
     - Multipath: knocks down walls of a single path math to generate the maze
