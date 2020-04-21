@@ -48,7 +48,7 @@ class FloodFillSimulation(Simulation):
     def draw(self, frame, delta):
         while self.cells_to_draw:
             current_cell = self.cells_to_draw.pop()
-            frame.create_rectangle(*self.__get_rectangle_coords__(current_cell), fill="green", outline="green")
+            frame.create_rectangle(*Maze.__get_rectangle_coords__(current_cell), fill="green", outline="green")
 
             if current_cell[0] == MAZE_DIMENSION - 1 and current_cell[1] == MAZE_DIMENSION - 1:
                 self.last_cell_drawn = True
@@ -85,13 +85,3 @@ class FloodFillSimulation(Simulation):
                 self.visited_cells.add(cell)
 
             self.total_time = 0
-
-    @staticmethod
-    def __get_rectangle_coords__(cell):
-        cell_x = cell[0]
-        cell_y = cell[1]
-        x1 = Maze.west_boundary(cell_x) + 1
-        y1 = Maze.north_boundary(cell_y) + 1
-        x2 = Maze.east_boundary(cell_x) - 1
-        y2 = Maze.south_boundary(cell_y) - 1
-        return x1, y1, x2, y2

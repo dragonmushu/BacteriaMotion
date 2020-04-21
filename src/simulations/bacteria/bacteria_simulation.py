@@ -1,7 +1,7 @@
 from src.simulations.simulation import Simulation
 from src.simulations.bacteria.constants import *
 from src.simulations.bacteria.bacteria import Bacteria
-from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
+from src.maze import Maze
 from src.constants import MAZE_DIMENSION
 
 
@@ -34,12 +34,16 @@ class BacteriaSimulation(Simulation):
         return final_path
 
     def write_statistics(self):
+        count = 0
         for bacterium in self.bacteria:
             if bacterium.completed_maze:
                 path = bacterium.retrieve_path()
+                print("Bacteria ", count)
                 print("Total Time: ", bacterium.total_time)
                 print("Route Distance: ", len(path))
                 print("Cells Visited: ", len(set(path)))
+                count += 1
+                print("\n")
 
     def statistics(self):
         self.write_statistics()
@@ -85,7 +89,7 @@ class BacteriaSimulation(Simulation):
     def draw(self, frame, delta):
         while self.new_cells_covered:
             current_cell = self.new_cells_covered.pop()
-            frame.create_rectangle(*FloodFillSimulation.__get_rectangle_coords__(current_cell), fill="green", outline="green")
+            frame.create_rectangle(*Maze.__get_rectangle_coords__(current_cell), fill="green", outline="green")
         # draw  object
         for bacterium in self.bacteria:
             bacterium.draw(frame)

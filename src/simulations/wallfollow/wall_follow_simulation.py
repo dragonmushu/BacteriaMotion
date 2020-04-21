@@ -52,7 +52,7 @@ class WallFollowSimulation(Simulation):
 
     def draw(self, frame, delta):
         if self.new_cell_to_draw:
-            frame.create_rectangle(*FloodFillSimulation.__get_rectangle_coords__(self.new_cell_to_draw), fill="green",
+            frame.create_rectangle(*Maze.__get_rectangle_coords__(self.new_cell_to_draw), fill="green",
                                    outline="green")
             self.new_cell_to_draw = None
 

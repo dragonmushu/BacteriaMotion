@@ -1,7 +1,8 @@
 import tkinter as tk
 
 from src.constants import *
-from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
+from src.maze import Maze
+
 
 class MazeCanvas:
 
@@ -21,7 +22,7 @@ class MazeCanvas:
         self.canvas.delete("all")
 
         # size of maze
-        maze_size = MAZE_DIMENSION  # TODO
+        maze_size = MAZE_DIMENSION
         cell_width = MAZE_WIDTH / maze_size
 
         # draw border
@@ -91,6 +92,6 @@ class MazeCanvas:
         if len(self.final_path) != 0:
             self.drawing_path_time += delta
             if self.drawing_path_time > FINAL_PATH_SPEED:
-                self.canvas.create_rectangle(*FloodFillSimulation.__get_rectangle_coords__(self.final_path.pop()),
+                self.canvas.create_rectangle(*Maze.__get_rectangle_coords__(self.final_path.pop()),
                                              fill="blue", outline="blue")
                 self.drawing_path_time = 0

@@ -122,6 +122,16 @@ class Maze:
         cell_width = MAZE_WIDTH / MAZE_DIMENSION
         return (cell_x + 1) * cell_width + BORDER_SIZE
 
+    @staticmethod
+    def __get_rectangle_coords__(cell):
+        cell_x = cell[0]
+        cell_y = cell[1]
+        x1 = Maze.west_boundary(cell_x) + 1
+        y1 = Maze.north_boundary(cell_y) + 1
+        x2 = Maze.east_boundary(cell_x) - 1
+        y2 = Maze.south_boundary(cell_y) - 1
+        return x1, y1, x2, y2
+
 
 def generate_maze(size, multipath=False):
     maze = Maze(size)

@@ -1,5 +1,4 @@
 import math
-
 from src.constants import PIXEL_UM_RATIO
 
 # BACTERIA SIMULATION #
@@ -36,4 +35,4 @@ M_MAR_ANGULAR_VELOCITY_UNCERTAINTY = math.radians(30)
 
 
 # Run Time #
-SIMULATION_TIME = 20 * 60  # 20 min
+SIMULATION_TIME = 30 * 60  #  30 min

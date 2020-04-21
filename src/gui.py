@@ -1,7 +1,6 @@
 import tkinter as tk
 import time
 import random
-import math
 
 from src.canvas import MazeCanvas
 from src.constants import *
