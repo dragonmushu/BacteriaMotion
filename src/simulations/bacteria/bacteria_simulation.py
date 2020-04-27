@@ -1,8 +1,8 @@
-from src.simulations.simulation import Simulation
-from src.simulations.bacteria.constants import *
-from src.simulations.bacteria.bacteria import Bacteria
-from src.maze import Maze
-from src.constants import MAZE_DIMENSION
+from simulations.simulation import Simulation
+from simulations.bacteria.constants import *
+from simulations.bacteria.bacteria import Bacteria
+from maze import Maze
+from constants import MAZE_DIMENSION
 
 
 class BacteriaSimulation(Simulation):

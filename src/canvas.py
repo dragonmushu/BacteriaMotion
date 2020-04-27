@@ -1,7 +1,7 @@
 import tkinter as tk
 
-from src.constants import *
-from src.maze import Maze
+from constants import *
+from maze import Maze
 
 
 class MazeCanvas:

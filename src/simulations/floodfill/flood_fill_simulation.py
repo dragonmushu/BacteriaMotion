@@ -1,9 +1,9 @@
 from collections import deque
 
-from src.simulations.simulation import Simulation
-from src.simulations.floodfill.constants import *
-from src.constants import *
-from src.maze import Maze
+from simulations.simulation import Simulation
+from simulations.floodfill.constants import *
+from constants import *
+from maze import Maze
 
 
 class FloodFillSimulation(Simulation):

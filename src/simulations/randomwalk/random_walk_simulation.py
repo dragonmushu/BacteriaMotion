@@ -1,5 +1,5 @@
-from src.simulations.bacteria.bacteria_simulation import BacteriaSimulation
-from src.simulations.randomwalk.constants import *
+from simulations.bacteria.bacteria_simulation import BacteriaSimulation
+from simulations.randomwalk.constants import *
 
 
 class RandomWalkSimulation(BacteriaSimulation):

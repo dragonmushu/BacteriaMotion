@@ -1,5 +1,5 @@
-from src.simulations.wallfollow.wall_follow_simulation import WallFollowSimulation
-from src.simulations.wallfollow.constants import RIGHT_ORIENTATION
+from simulations.wallfollow.wall_follow_simulation import WallFollowSimulation
+from simulations.wallfollow.constants import RIGHT_ORIENTATION
 
 
 class RightWallFollowSimulation(WallFollowSimulation):

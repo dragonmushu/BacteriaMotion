@@ -1,5 +1,5 @@
 import math
-from src.constants import PIXEL_UM_RATIO
+from constants import PIXEL_UM_RATIO
 
 # BACTERIA SIMULATION #
 NUMBER_BACTERIA = 50

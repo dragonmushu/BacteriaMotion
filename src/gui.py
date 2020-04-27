@@ -2,15 +2,15 @@ import tkinter as tk
 import time
 import random
 
-from src.canvas import MazeCanvas
-from src.constants import *
-from src.simulations.bacteria.constants import *
-from src.maze import generate_maze
-from src.simulations.bacteria.bacteria_simulation import BacteriaSimulation
-from src.simulations.wallfollow.right_wall_follow_simulation import RightWallFollowSimulation
-from src.simulations.wallfollow.left_wall_follow_simulation import LeftWallFollowSimulation
-from src.simulations.randomwalk.random_walk_simulation import RandomWalkSimulation
-from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
+from canvas import MazeCanvas
+from constants import *
+from simulations.bacteria.constants import *
+from maze import generate_maze
+from simulations.bacteria.bacteria_simulation import BacteriaSimulation
+from simulations.wallfollow.right_wall_follow_simulation import RightWallFollowSimulation
+from simulations.wallfollow.left_wall_follow_simulation import LeftWallFollowSimulation
+from simulations.randomwalk.random_walk_simulation import RandomWalkSimulation
+from simulations.floodfill.flood_fill_simulation import FloodFillSimulation
 
 
 class Gui:

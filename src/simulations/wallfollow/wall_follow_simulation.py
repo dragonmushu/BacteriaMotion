@@ -1,12 +1,11 @@
 from builtins import staticmethod
 
-from src.simulations.simulation import Simulation
-from src.simulations.floodfill.flood_fill_simulation import FloodFillSimulation
-from src.simulations.wallfollow.constants import *
-from src.simulations.bacteria.constants import BACTERIA_RADIUS_PX
-from src.simulations.constants import START_X, START_Y
-from src.constants import MAZE_DIMENSION
-from src.maze import Maze
+from simulations.simulation import Simulation
+from simulations.wallfollow.constants import *
+from simulations.bacteria.constants import BACTERIA_RADIUS_PX
+from simulations.constants import START_X, START_Y
+from constants import MAZE_DIMENSION
+from maze import Maze
 
 
 class WallFollowSimulation(Simulation):

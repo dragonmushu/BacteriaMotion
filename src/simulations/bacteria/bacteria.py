@@ -1,7 +1,7 @@
 import random
 
-from src.simulations.bacteria.constants import *
-from src.simulations.constants import *
+from simulations.bacteria.constants import *
+from simulations.constants import *
 
 
 class Bacteria:
