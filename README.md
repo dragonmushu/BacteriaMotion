@@ -7,7 +7,7 @@ The ability of an organism to solve a maze is a non-trivial way to evaluate orga
 # Installation
 
 ### Requirements:
-1. Python 3: https://www.python.org/downloads/
+1. [Python 3](https://www.python.org/downloads/) 
     2. Make sure python is in the PATH variable
 
 ### Setup
@@ -18,6 +18,8 @@ The ability of an organism to solve a maze is a non-trivial way to evaluate orga
 4. Run `python gui.py`
 
 # Features
+
+![Example E.Coli Run](images/ecoli_example.png)
 
 ## Maze Options
     1. Singlepath: the default maze generated, can persist for multiple simulations
