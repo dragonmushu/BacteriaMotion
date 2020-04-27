@@ -40,7 +40,7 @@ The ability of an organism to solve a maze is a non-trivial way to evaluate orga
     4. Right wall follow
     
 ## BFS
-    1. this feature allows the user to see the shortest path distance for the solved maze
+    1. This feature displays the shortest path distance for the solved maze
 
 ## Statistics Panel
     1. Total time (s)
