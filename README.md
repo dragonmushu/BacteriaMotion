@@ -8,7 +8,7 @@ The ability of an organism to solve a maze is a non-trivial way to evaluate orga
 
 ### Requirements:
 1. [Python 3](https://www.python.org/downloads/) 
-    2. Make sure python is in the PATH variable
+2. Make sure python is in the PATH variable
 
 ### Setup
 1. If you have git in a directory: `git clone https://github.com/dragonmushu/BacteriaMotion.git`  
